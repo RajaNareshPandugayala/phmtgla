@@ -1,0 +1,515 @@
+/* .App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+} */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0%;
+  padding: 0%;
+  box-sizing: border-box;
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+/* body {
+  background-color: red;
+} */
+
+.hidden {
+  display: none;
+}
+
+.SignupAndLoginDivParent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+  height: 100vh;
+  /* background-color: darkgreen; */
+  background-color: #040431;
+  background-color: linear-gradient(#07093f80, #05053b);
+}
+
+.SignupAndLoginDiv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+
+.SignupAndLoginTaglineDiv {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 350px;
+}
+
+.signupTaglineDiv,
+.loginTaglineDiv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid lightgray;
+  background-color: white;
+  /* box-shadow: -0px -2px 5px 0px black; */
+  border-top-left-radius: 0.25cm;
+  border-top-right-radius: 0.25cm;
+  width: 100%;
+  z-index: 1100;
+}
+
+
+/* .signupTaglineDiv:hover,
+.loginTaglineDiv:hover {
+  border: 2px solid pink;
+  color: darkorange;
+  text-decoration: underline;
+  box-shadow: 1px 1px 5px 1px gray;
+  cursor: pointer;
+}
+
+.signupTaglineDiv:active,
+.loginTaglineDiv:active {
+  color: darkblue;
+  text-decoration: none;
+} */
+
+.signupTaglineSpan,
+.loginTaglineSpan {
+  padding: 10px;
+  font-weight: bold;
+  font-size: x-large;
+}
+
+
+
+.divider {
+  border: none;
+  height: 1px;
+}
+
+
+
+.signupPageHeader,
+.loginPageHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.signupPageHeaderText,
+.loginPageHeaderText {
+  font-size: 28px;
+  font-style: italic;
+  font-weight: bold;
+}
+
+.signupPageHeaderContent,
+.loginPageHeaderContent {
+  font-size: 14px;
+  line-height: 15px;
+}
+
+
+
+.SignupAndLoginFormDiv {
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  /* background-color: red; */
+}
+
+.signupFormParent,
+.loginFormParent {
+  display: flex;
+  width: 100%;
+  /* background-color: red; */
+}
+
+.signupForm,
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  border: 2px solid lightgray;
+  background-color: white;
+  /* box-shadow: 0px 0px 10px 0px black; */
+  /* border-radius: 0.25cm; */
+  border-bottom-left-radius: 0.25cm;
+  border-bottom-right-radius: 0.25cm;
+  padding: 20px;
+  width: 350px;
+  height: 250px;
+  z-index: 1000;
+}
+
+.formDiv {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 10px;
+}
+
+.signupForm input,
+.signupForm select,
+.loginForm input,
+.loginForm select {
+  border-radius: 0.05cm;
+  border: 1px solid #00bfff;
+}
+
+.signupForm input,
+.loginForm input {
+  padding: 10px;
+  border-radius: 0.2cm;
+}
+
+.accountStatusMsgs {
+  font-weight: bold;
+  font-size: 12px;
+  padding: 4px;
+  color: red;
+  height: 25px;
+}
+
+.forgetPasswordDiv {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  /* background-color: red; */
+}
+
+.forgetPassword {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.forgetPassword:hover {
+  color: darkorange;
+  text-decoration: underline;
+}
+
+.forgetPassword:active {
+  color: darkblue;
+  text-decoration: none;
+}
+
+.SignupButton,
+.LogInButton {
+  background-color: #00bfff;
+  border: 1px solid #00bfff;
+  border-radius: 0.2cm;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 10px;
+  margin-top: 7px;
+}
+
+.SignupButton:hover,
+.LogInButton:hover {
+  background-color: blue;
+  color: white;
+  text-decoration: underline;
+}
+
+.SignupButton:active,
+.LogInButton:active {
+  background-color: darkorange;
+  text-decoration: none;
+}
+
+.SinupButtonPage,
+.LogInButtonPage {
+  font-weight: bold;
+  cursor: pointer;
+  border: 1px solid white;
+}
+
+.SinupButtonPageDiv a,
+.LogInButtonPageDiv a {
+  color: #909090;
+  text-decoration: none;
+}
+
+.SinupButtonPageSpan,
+.LogInButtonPageSpan {
+  color: #00bfff;
+}
+
+.SinupButtonPage:hover>.SinupButtonPageSpan,
+.LogInButtonPage:hover>.LogInButtonPageSpan {
+  color: darkorange;
+  text-decoration: underline;
+}
+
+.SinupButtonPage:active>.SinupButtonPageSpan,
+.LogInButtonPage:active>.LogInButtonPageSpan {
+  color: darkblue;
+  text-decoration: none;
+}
+
+
+
+/******************************LoanApplication-Start***********************************/
+
+.loanApplicationformParent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  background-color: #040431;
+  background-color: linear-gradient(#07093f80, #05053b);
+  padding: 50px;
+  gap: 20px;
+}
+
+
+.loanApplicationformLoginSignuplinksDiv {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 20px;
+  position: relative;
+  top: 0;
+  right: 50px;
+}
+
+.loanApplicationformLoginSignuplinksDiv a {
+  color: white;
+  text-decoration: none;
+}
+
+.loanApplicationformBox {
+  display: flex;
+  width: 60%;
+  align-items: center;
+  justify-content: center;
+}
+
+.loanApplicationform {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: whitesmoke;
+  padding: 50px;
+  border-radius: 0.25cm;
+  box-shadow: 0px 0px 500cm #043a72a4;
+  /* text-align: justify; */
+  width: 100%;
+  text-shadow: 0px 0px 1px gray;
+}
+
+.loanApplicationformBoxDiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+}
+
+.loanApplicationformBoxDiv {
+  display: none;
+}
+
+.loanApplicationformBoxDiv.active {
+  display: flex;
+}
+
+.loanApplicationformLabelText,
+.loanApplicationformLabelTel {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 90%;
+}
+
+.loanApplicationformLabelText label,
+.loanApplicationformLabelTel label {
+  display: flex;
+  flex-direction: column;
+}
+
+.loanApplicationformLabelRadio {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 90%;
+}
+
+.loanApplicationformBoxDiv p {
+  width: 90%;
+}
+
+.loanApplicationformheading1,
+.loanApplicationformheading2,
+.loanApplicationformheading3,
+.loanApplicationformheading4 {
+  color: #003e80;
+  padding-top: 10px;
+}
+
+
+.loanApplicationButtonBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding-top: 20px;
+  gap: 15px;
+}
+
+.loanApplicationContinueButton {
+  padding: 7px 15px;
+  border-radius: 0.15cm;
+  border: 1px solid darkblue;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.loanApplicationSubmitButton {
+  padding: 7px 15px;
+  border-radius: 0.15cm;
+  border: 1px solid darkred;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.loanApplicationContinueButton:hover,
+.loanApplicationGoBack:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+
+.loanApplicationformInputText,
+.loanApplicationformInputTel,
+.loanApplicationformInputNumber,
+.loanApplicationformInputEmail,
+.loanApplicationformInputDate,
+.loanApplicationformSelect,
+.loanApplicationformTextarea {
+  border: 1px solid #acd4f7;
+  border-radius: 0.15cm;
+  padding: 18px 10px;
+}
+
+
+.loanApplicationformInputText:focus,
+.loanApplicationformInputTel:focus,
+.loanApplicationformInputNumber:focus,
+.loanApplicationformInputEmail:focus,
+.loanApplicationformInputDate:focus,
+.loanApplicationformSelect:focus,
+.loanApplicationformTextarea:focus {
+  border-top: 1px solid transparent;
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+  outline: none;
+  box-shadow: 0px 1px 5px 1px #acd4f7;
+}
+
+.loanApplicationformSelect option {
+  background-color: white;
+}
+
+
+input.invalid {
+  border: 2px solid red;
+  background-color: #ffe6e6;
+}
+
+/******************************LoanApplication-End***********************************/
+
+@media (max-width: 1200px) {
+  .loanApplicationformBox {
+    width: 70%;
+  }
+}
+
+@media (max-width: 1070px) {
+
+  .loanApplicationformBox {
+    width: 80%;
+  }
+
+}
+
+@media (max-width: 949px) {
+
+  .loanApplicationformBox {
+    width: 90%;
+  }
+}
+
+
+
+@media (max-width: 850px) {
+
+  .loanApplicationformParent {
+    padding: 50px 10px;
+  }
+}
+
+
+@media (max-width: 750px) {
+
+  .loanApplicationform {
+    padding: 30px 10px;
+  }
+
+}
+
+
+@media (max-width: 550px) {
+
+  .loanApplicationformParent {
+    padding: 30px 5px;
+  }
+}
