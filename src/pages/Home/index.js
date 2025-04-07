@@ -1,7 +1,47 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
-  const [isLogin, setIsLogin] = useState(true); // false means show Signup by default
+  const navigate = useNavigate();
+  const [isLogin, setIsLogin] = useState(true);
+
+  // Form states
+  const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [registerData, setRegisterData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  // Handle input changes
+  const handleInputChange = (e, type) => {
+    const { name, value } = e.target;
+    if (type === "login") {
+      setLoginData((prev) => ({ ...prev, [name]: value }));
+    } else {
+      setRegisterData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  // Handle login
+  const handleLogin = () => {
+    const { email, password } = loginData;
+    if (email && password) {
+      navigate("/loan-application");
+    } else {
+      alert("Please fill in all login fields.");
+    }
+  };
+
+  // Handle register
+  const handleRegister = () => {
+    const { name, email, password } = registerData;
+    if (name && email && password) {
+      navigate("/loan-application");
+    } else {
+      alert("Please fill in all registration fields.");
+    }
+  };
 
   return (
     <div className="SignupAndLoginDivParent">
@@ -21,7 +61,7 @@ function Home() {
         <div className="SignupAndLoginFormDiv">
           <div className="SignupDiv">
             <div className="signupFormParent">
-              <form action={"/loan-application"} className="signupForm">
+              <div className="signupForm">
                 <div className="formDiv">
                   <input
                     type="email"
@@ -31,6 +71,8 @@ function Home() {
                     autoComplete="true"
                     required
                     className="email"
+                    value={loginData.email}
+                    onChange={(e) => handleInputChange(e, "login")}
                   />
                   <input
                     type="password"
@@ -40,8 +82,14 @@ function Home() {
                     autoComplete="true"
                     required
                     className="password"
+                    value={loginData.password}
+                    onChange={(e) => handleInputChange(e, "login")}
                   />
-                  <button className="SignupButton submitButton" type="submit">
+                  <button
+                    className="SignupButton submitButton"
+                    type="button"
+                    onClick={handleLogin}
+                  >
                     Login
                   </button>
                 </div>
@@ -56,7 +104,7 @@ function Home() {
                     <span className="SinupButtonPageSpan">Register</span>
                   </button>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
         </div>
@@ -78,7 +126,7 @@ function Home() {
         <div className="SignupAndLoginFormDiv">
           <div className="SignupDiv">
             <div className="signupFormParent">
-              <form action={"/loan-application"} className="signupForm">
+              <div className="signupForm">
                 <div className="formDiv">
                   <input
                     type="text"
@@ -88,6 +136,8 @@ function Home() {
                     autoComplete="true"
                     required
                     className="username"
+                    value={registerData.name}
+                    onChange={(e) => handleInputChange(e, "register")}
                   />
                   <input
                     type="email"
@@ -97,6 +147,8 @@ function Home() {
                     autoComplete="true"
                     required
                     className="email"
+                    value={registerData.email}
+                    onChange={(e) => handleInputChange(e, "register")}
                   />
                   <input
                     type="password"
@@ -106,8 +158,14 @@ function Home() {
                     autoComplete="true"
                     required
                     className="password"
+                    value={registerData.password}
+                    onChange={(e) => handleInputChange(e, "register")}
                   />
-                  <button className="SignupButton submitButton" type="submit">
+                  <button
+                    className="SignupButton submitButton"
+                    type="button"
+                    onClick={handleRegister}
+                  >
                     Register
                   </button>
                 </div>
@@ -122,7 +180,7 @@ function Home() {
                     <span className="SinupButtonPageSpan">Log In</span>
                   </button>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
         </div>

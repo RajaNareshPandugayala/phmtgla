@@ -196,7 +196,7 @@ function LoanApplication() {
   return (
     <div className="loanApplicationformParent">
       <div className="loanApplicationformLoginSignuplinksDiv">
-        <a href="/">Login/SignUp</a>
+        <a href="/phmtgla">Login/SignUp</a>
       </div>
       <div className="loanApplicationformBox">
         <form
