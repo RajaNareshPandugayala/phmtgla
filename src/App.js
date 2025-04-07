@@ -10,7 +10,7 @@ import LoanApplication from "./pages/Home/loanApplication";
 function App() {
   return (
     <div>
-      <BrowserRouter>
+      <BrowserRouter basename="/phmtgla">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/loan-application" element={<LoanApplication />} />
