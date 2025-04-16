@@ -3,6 +3,7 @@ import React, { useRef, useState, useEffect } from "react";
 function LoanApplication() {
   // function LoanApplication() {
   const nextRef = useRef(null);
+  const [formErrors, setFormErrors] = useState({});
 
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -141,6 +142,14 @@ function LoanApplication() {
       ...prevData,
       [name]: value,
     }));
+
+    if (formErrors[name] && value.trim()) {
+      setFormErrors((prevErrors) => {
+        const newErrors = { ...prevErrors };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
   }
 
   const handleNextStep = () => {
@@ -170,7 +179,7 @@ function LoanApplication() {
       }
     });
 
-    // setErrors(newErrors);
+    setFormErrors(newErrors); // Highlight missing fields
 
     // If there are no errors, move to the next step
     if (Object.keys(newErrors).length === 0) {
@@ -664,6 +673,11 @@ function LoanApplication() {
                     placeholder="No. of Year(s)"
                     value={formData.currentAddressYear}
                     onChange={handleChange}
+                    style={{
+                      border: formErrors.FullName
+                        ? "1px solid red"
+                        : "1px solid #ccc",
+                    }}
                     autocomplete="true"
                     required
                   />
@@ -676,6 +690,11 @@ function LoanApplication() {
                     placeholder="No. of Month(s)"
                     value={formData.currentAddressMonth}
                     onChange={handleChange}
+                    style={{
+                      border: formErrors.FullName
+                        ? "1px solid red"
+                        : "1px solid #ccc",
+                    }}
                     autocomplete="true"
                     required
                   />
@@ -886,6 +905,11 @@ function LoanApplication() {
                     placeholder="No. of year(s)"
                     value={formData.workingYear2}
                     onChange={handleChange}
+                    style={{
+                      border: formErrors.FullName
+                        ? "1px solid red"
+                        : "1px solid #ccc",
+                    }}
                     autocomplete="true"
                     required
                   />
@@ -898,6 +922,11 @@ function LoanApplication() {
                     placeholder="No. of month(s)"
                     value={formData.workingmonth2}
                     onChange={handleChange}
+                    style={{
+                      border: formErrors.FullName
+                        ? "1px solid red"
+                        : "1px solid #ccc",
+                    }}
                     autocomplete="true"
                     required
                   />
@@ -1085,6 +1114,11 @@ function LoanApplication() {
                     placeholder="##"
                     value={formData.workingYear}
                     onChange={handleChange}
+                    style={{
+                      border: formErrors.FullName
+                        ? "1px solid red"
+                        : "1px solid #ccc",
+                    }}
                     autocomplete="true"
                     required
                   />
@@ -1097,6 +1131,11 @@ function LoanApplication() {
                     placeholder="##"
                     value={formData.workingMonth}
                     onChange={handleChange}
+                    style={{
+                      border: formErrors.FullName
+                        ? "1px solid red"
+                        : "1px solid #ccc",
+                    }}
                     autocomplete="true"
                     required
                   />
@@ -1305,6 +1344,11 @@ function LoanApplication() {
                     name="PerMonth4"
                     checked={formData === "PerMonth4"}
                     onChange={handleChange}
+                    style={{
+                      border: formErrors.FullName
+                        ? "1px solid red"
+                        : "1px solid #ccc",
+                    }}
                   />
                 </span>
               </label>
