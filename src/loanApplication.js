@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
+import axios from "axios";
 
 function LoanApplication() {
-  // function LoanApplication() {
   const nextRef = useRef(null);
   const [formErrors, setFormErrors] = useState({});
 
@@ -103,31 +103,55 @@ function LoanApplication() {
     }));
   }, []);
 
+  // function handleSubmit(event) {
+  //   event.preventDefault();
+
+  //   const formElement = event.target;
+  //   formElement.classList.add("submitting");
+
+  //   const data = new FormData();
+  //   for (const key in formData) {
+  //     data.append(key, formData[key]);
+  //   }
+
+  //   const scriptURL =
+  //     "https://script.google.com/macros/s/AKfycbxKqR-2reW1-qNQUtVhtsUbBYuwQR3EqiuPcoeyI5PlVW65EkZ77mwJc_S0sTxGehSz/exec";
+
+  //   fetch(scriptURL, {
+  //     method: "POST",
+  //     body: data,
+  //   })
+  //     .then((response) => {
+  //       if (response.ok) {
+  //         window.location.reload();
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error!", error.message);
+  //     })
+  //     .finally(() => {
+  //       formElement.classList.remove("submitting");
+  //     });
+
+  //   window.scrollTo({ top: 0, behavior: "smooth" });
+  // }
+
   function handleSubmit(event) {
     event.preventDefault();
 
     const formElement = event.target;
     formElement.classList.add("submitting");
 
-    const data = new FormData();
-    for (const key in formData) {
-      data.append(key, formData[key]);
-    }
-
-    const scriptURL =
-      "https://script.google.com/macros/s/AKfycbxKqR-2reW1-qNQUtVhtsUbBYuwQR3EqiuPcoeyI5PlVW65EkZ77mwJc_S0sTxGehSz/exec";
-
-    fetch(scriptURL, {
-      method: "POST",
-      body: data,
-    })
+    axios
+      .post("http://localhost:5000/api/loan-application", formData)
       .then((response) => {
-        if (response.ok) {
-          window.location.reload();
+        if (response.data.success) {
+          // Reset the form or redirect if needed
+          window.location.reload(); // or navigate to a success page
         }
       })
       .catch((error) => {
-        console.error("Error!", error.message);
+        console.error("Error!", error.response?.data || error.message);
       })
       .finally(() => {
         formElement.classList.remove("submitting");
@@ -187,11 +211,6 @@ function LoanApplication() {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
-
-  // const handleNextStep = () => {
-  //   setCurrentStep((prev) => prev + 1);
-  //   window.scrollTo({ top: 0, behavior: "smooth" });
-  // };
 
   const handlePreviousStep = () => {
     setCurrentStep((prev) => (prev > 0 ? prev - 1 : 0));
