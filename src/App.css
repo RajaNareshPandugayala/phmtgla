@@ -486,6 +486,51 @@ input.invalid {
   background-color: #ffe6e6;
 }
 
+
+
+
+
+/***************popupMessage-Start***************/
+
+
+.popupMessage {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  padding: 1rem 1.5rem;
+  border-radius: 6px;
+  color: #fff;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.popupMessage.success {
+  background-color: #28a745;
+}
+
+.popupMessage.warning {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.popupMessage.error {
+  background-color: #dc3545;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/***************popupMessage-End***************/
 /******************************LoanApplication-End***********************************/
 
 @media (max-width: 1200px) {

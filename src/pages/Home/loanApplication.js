@@ -2,6 +2,9 @@ import React, { useRef, useState, useEffect } from "react";
 
 function LoanApplication() {
   // function LoanApplication() {
+  const [popupMessage, setPopupMessage] = useState("");
+  const [popupType, setPopupType] = useState(""); // "success" | "error" | "warning"
+
   const nextRef = useRef(null);
   const [formErrors, setFormErrors] = useState({});
 
@@ -123,11 +126,18 @@ function LoanApplication() {
     })
       .then((response) => {
         if (response.ok) {
-          window.location.reload();
+          setPopupMessage("Form submitted successfully!");
+          setPopupType("success");
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);
+        } else {
+          throw new Error("Failed to submit the form.");
         }
       })
       .catch((error) => {
-        console.error("Error!", error.message);
+        setPopupMessage("Error submitting the form: " + error.message);
+        setPopupType("error");
       })
       .finally(() => {
         formElement.classList.remove("submitting");
@@ -186,6 +196,12 @@ function LoanApplication() {
       setCurrentStep((prev) => prev + 1);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
+
+    if (Object.keys(newErrors).length > 0) {
+      setPopupMessage("Please fill in all required fields.");
+      setPopupType("warning");
+      return;
+    }
   };
 
   // const handleNextStep = () => {
@@ -209,6 +225,14 @@ function LoanApplication() {
           SignOut
         </a>
       </div>
+      {popupMessage && (
+        <div className={`popupMessage ${popupType}`}>
+          {popupMessage}
+          <button onClick={() => setPopupMessage("")} className="closeBtn">
+            ×
+          </button>
+        </div>
+      )}
       <div className="loanApplicationformBox">
         <form
           className="loanApplicationform"

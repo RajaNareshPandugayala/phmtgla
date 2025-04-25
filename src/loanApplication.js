@@ -2,6 +2,9 @@ import React, { useRef, useState, useEffect } from "react";
 import axios from "axios";
 
 function LoanApplication() {
+  const [popupMessage, setPopupMessage] = useState("");
+  const [popupType, setPopupType] = useState(""); // "success" | "error" | "warning"
+
   const nextRef = useRef(null);
   const [formErrors, setFormErrors] = useState({});
 
@@ -143,15 +146,21 @@ function LoanApplication() {
     formElement.classList.add("submitting");
 
     axios
-      .post("http://localhost:5000/api/loan-application", formData)
+      .post("http://localhost:3000/api/loan-application", formData)
       .then((response) => {
-        if (response.data.success) {
-          // Reset the form or redirect if needed
-          window.location.reload(); // or navigate to a success page
+        if (response.ok) {
+          setPopupMessage("Form submitted successfully!");
+          setPopupType("success");
+          setTimeout(() => {
+            window.location.reload();
+          }, 500);
+        } else {
+          throw new Error("Failed to submit the form.");
         }
       })
       .catch((error) => {
-        console.error("Error!", error.response?.data || error.message);
+        setPopupMessage("Error submitting the form: " + error.message);
+        setPopupType("error");
       })
       .finally(() => {
         formElement.classList.remove("submitting");
@@ -210,6 +219,12 @@ function LoanApplication() {
       setCurrentStep((prev) => prev + 1);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
+
+    if (Object.keys(newErrors).length > 0) {
+      setPopupMessage("Please fill in all required fields.");
+      setPopupType("warning");
+      return;
+    }
   };
 
   const handlePreviousStep = () => {
@@ -228,6 +243,15 @@ function LoanApplication() {
           SignOut
         </a>
       </div>
+      {popupMessage && (
+        <div className={`popupMessage ${popupType}`}>
+          {popupMessage}
+          <button onClick={() => setPopupMessage("")} className="closeBtn">
+            ×
+          </button>
+        </div>
+      )}
+
       <div className="loanApplicationformBox">
         <form
           className="loanApplicationform"
