@@ -49,9 +49,9 @@
   font-family: 'Montserrat', sans-serif !important;
 }
 
-/* body {
-  background-color: red;
-} */
+body {
+  background-color: #040431;
+}
 
 .hidden {
   display: none;
@@ -313,10 +313,12 @@
   justify-content: center;
   flex-direction: column;
   width: 100%;
+  /* height: 100vh; */
   background-color: #040431;
   background-color: linear-gradient(#07093f80, #05053b);
   padding: 50px;
   gap: 20px;
+
 }
 
 
@@ -349,6 +351,7 @@
   width: 60%;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 
 .loanApplicationform {
@@ -481,13 +484,92 @@
 }
 
 
-input.invalid {
-  border: 2px solid red;
-  background-color: #ffe6e6;
+/***************LoanApplicationNew-Start***************/
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.steps {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.steps span {
+  flex: 1;
+  text-align: center;
+  padding: 8px;
+  border-bottom: 2px solid lightgray;
+}
+
+.steps .active {
+  font-weight: bold;
+  border-bottom: 2px solid blue;
+}
+
+.section {
+  margin-bottom: 20px;
+}
+
+/* .section label {
+  font-weight: bold;
+} */
+
+.container h1,
+.section h2 {
+  color: #003e80;
+  padding-bottom: 10px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+label input[type="radio"] {
+  width: auto;
 }
 
 
 
+.error {
+  color: red;
+  font-size: 0.9em;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  width: 100%;
+}
+
+.buttons button {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.buttons button:hover {
+  background-color: #040431;
+  color: white;
+  border-radius: 0.1cm;
+
+}
+
+/***************LoanApplicationNew-End***************/
 
 
 /***************popupMessage-Start***************/
