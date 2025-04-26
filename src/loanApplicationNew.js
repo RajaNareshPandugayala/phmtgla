@@ -131,7 +131,7 @@ function LoanApplicationNew() {
               <Input
                 label="First Name"
                 name="firstName"
-                placeholder="RajaNaresh"
+                placeholder="John"
                 value={formData.firstName}
                 error={errors.firstName}
                 onChange={handleChange}
@@ -139,7 +139,7 @@ function LoanApplicationNew() {
               <Input
                 label="Last Name"
                 name="lastName"
-                placeholder="Pandugayala"
+                placeholder="Smith"
                 value={formData.lastName}
                 error={errors.lastName}
                 onChange={handleChange}
@@ -147,7 +147,7 @@ function LoanApplicationNew() {
               <Input
                 label="Email"
                 name="email"
-                placeholder="rajanaresh.pandugayala@example.com"
+                placeholder="john.smith@example.com"
                 value={formData.email}
                 error={errors.email}
                 onChange={handleChange}
