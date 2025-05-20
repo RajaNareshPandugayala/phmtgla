@@ -1,0 +1,584 @@
+
+import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Separator } from '@/components/ui/separator';
+import { toast } from 'sonner';
+
+// Form schema
+const formSchema = z.object({
+  // Personal Information
+  firstName: z.string().min(2, { message: 'First name must be at least 2 characters.' }),
+  lastName: z.string().min(2, { message: 'Last name must be at least 2 characters.' }),
+  email: z.string().email({ message: 'Please enter a valid email address.' }),
+  phone: z.string().min(10, { message: 'Please enter a valid phone number.' }),
+  dob: z.string().min(1, { message: 'Date of birth is required.' }),
+  ssn: z.string().min(9, { message: 'SSN must be at least 9 characters.' }).max(11),
+  no_borrowers:z.string().min(1, { message: 'Please enter the number of borrower(s).' }),
+
+
+
+  // Employment Information
+  employmentStatus: z.string().min(1, { message: 'Please select employment status.' }),
+  employer: z.string().optional(),
+  jobTitle: z.string().optional(),
+  yearsEmployed: z.string().optional(),
+  monthlyIncome: z.string().min(1, { message: 'Monthly income is required.' }),
+
+  // Property Information
+  propertyType: z.string().min(1, { message: 'Please select property type.' }),
+  propertyValue: z.string().min(1, { message: 'Property value is required.' }),
+  downPayment: z.string().min(1, { message: 'Down payment is required.' }),
+
+  // Loan Information
+  loanPurpose: z.string().min(1, { message: 'Please select loan purpose.' }),
+  loanAmount: z.string().min(1, { message: 'Loan amount is required.' }),
+  loanTerm: z.string().min(1, { message: 'Please select loan term.' }),
+  creditScore: z.string().min(1, { message: 'Please select credit score range.' }),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
+const ApplicationForm = () => {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      dob: '',
+      ssn: '',
+      no_borrowers:'',
+      employmentStatus: '',
+      employer: '',
+      jobTitle: '',
+      yearsEmployed: '',
+      monthlyIncome: '',
+      propertyType: '',
+      propertyValue: '',
+      downPayment: '',
+      loanPurpose: '',
+      loanAmount: '',
+      loanTerm: '',
+      creditScore: '',
+    },
+    mode: 'onChange',
+  });
+
+  const onSubmit = (data: FormValues) => {
+    setIsSubmitting(true);
+
+    // Simulate API call with timeout
+    setTimeout(() => {
+      console.log('Form submitted:', data);
+      toast.success('Application submitted successfully!');
+
+      // Reset form and go back to step 1
+      form.reset();
+      setCurrentStep(1);
+      setIsSubmitting(false);
+    }, 2000);
+  };
+
+  const nextStep = async () => {
+    let fieldsToValidate: (keyof FormValues)[] = [];
+
+    switch (currentStep) {
+      case 1:
+        fieldsToValidate = ['firstName', 'lastName', 'email', 'phone', 'dob', 'ssn', 'no_borrowers'];
+        break;
+      case 2:
+        fieldsToValidate = ['employmentStatus', 'monthlyIncome'];
+        // Only validate employer fields if employed
+        if (form.getValues('employmentStatus') === 'employed') {
+          fieldsToValidate.push('employer', 'jobTitle', 'yearsEmployed');
+        }
+        break;
+      case 3:
+        fieldsToValidate = ['propertyType', 'propertyValue', 'downPayment'];
+        break;
+      default:
+        break;
+    }
+
+    const isValid = await form.trigger(fieldsToValidate as any);
+    if (isValid) {
+      setCurrentStep(prev => prev + 1);
+      window.scrollTo(0, 0);
+    }
+  };
+
+  const prevStep = () => {
+    setCurrentStep(prev => prev - 1);
+    window.scrollTo(0, 0);
+  };
+
+  return (
+    <Card className="w-full shadow-lg">
+      <CardHeader>
+        <CardTitle className="text-bank-primary">Loan Application</CardTitle>
+        <CardDescription>
+          Please provide accurate information to process your loan application.
+        </CardDescription>
+        <div className="flex justify-between items-center mt-4 px-2">
+          <div className={`text-sm font-medium ${currentStep === 1 ? 'text-bank-primary' : 'text-gray-500'}`}>Personal</div>
+          <Separator className="flex-1 mx-2" />
+          <div className={`text-sm font-medium ${currentStep === 2 ? 'text-bank-primary' : 'text-gray-500'}`}>Employment</div>
+          <Separator className="flex-1 mx-2" />
+          <div className={`text-sm font-medium ${currentStep === 3 ? 'text-bank-primary' : 'text-gray-500'}`}>Property</div>
+          <Separator className="flex-1 mx-2" />
+          <div className={`text-sm font-medium ${currentStep === 4 ? 'text-bank-primary' : 'text-gray-500'}`}>Loan</div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            {/* Step 1: Personal Information */}
+            {currentStep === 1 && (
+              <div className="space-y-4 animate-fade-in">
+                <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="firstName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>First Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="John" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="lastName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Last Name</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Smith" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input placeholder="john.smith@example.com" type="email" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone Number</FormLabel>
+                        <FormControl>
+                          <Input placeholder="(555) 123-4567" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="dob"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Date of Birth</FormLabel>
+                        <FormControl>
+                          <Input type="date" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="ssn"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Social Security Number</FormLabel>
+                        <FormControl>
+                          <Input placeholder="XXX-XX-XXXX" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="no_borrowers"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>No.Of Borrowers</FormLabel>
+                        <FormControl>
+                          <Input type="number" placeholder="No.of.Borrowers" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: Employment Information */}
+            {currentStep === 2 && (
+              <div className="space-y-4 animate-fade-in">
+                <h2 className="text-xl font-semibold mb-4">Employment Information</h2>
+                <div className="grid grid-cols-1 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="employmentStatus"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Employment Status</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select employment status" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="employed">Employed</SelectItem>
+                            <SelectItem value="self-employed">Self-employed</SelectItem>
+                            <SelectItem value="unemployed">Unemployed</SelectItem>
+                            <SelectItem value="retired">Retired</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {form.watch('employmentStatus') === 'employed' && (
+                    <>
+                      <FormField
+                        control={form.control}
+                        name="employer"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Current Employer</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Company name" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="jobTitle"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Job Title</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Your position" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="yearsEmployed"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Years at Current Job</FormLabel>
+                            <FormControl>
+                              <Input type="number" placeholder="Years" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </>
+                  )}
+
+                  <FormField
+                    control={form.control}
+                    name="monthlyIncome"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Monthly Income</FormLabel>
+                        <FormControl>
+                          <Input placeholder="5000" type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Step 3: Property Information */}
+            {currentStep === 3 && (
+              <div className="space-y-4 animate-fade-in">
+                <h2 className="text-xl font-semibold mb-4">Property Information</h2>
+                <div className="grid grid-cols-1 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="propertyType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Property Type</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select property type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="single-family">Single-Family Home</SelectItem>
+                            <SelectItem value="condo">Condominium</SelectItem>
+                            <SelectItem value="townhouse">Townhouse</SelectItem>
+                            <SelectItem value="multi-family">Multi-Family Home</SelectItem>
+                            <SelectItem value="other">Other</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="propertyValue"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Estimated Property Value</FormLabel>
+                        <FormControl>
+                          <Input placeholder="250000" type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="downPayment"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Down Payment Amount</FormLabel>
+                        <FormControl>
+                          <Input placeholder="50000" type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Step 4: Loan Information */}
+            {currentStep === 4 && (
+              <div className="space-y-4 animate-fade-in">
+                <h2 className="text-xl font-semibold mb-4">Loan Information</h2>
+                <div className="grid grid-cols-1 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="loanPurpose"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Loan Purpose</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select loan purpose" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="purchase">Purchase Home</SelectItem>
+                            <SelectItem value="refinance">Refinance</SelectItem>
+                            <SelectItem value="cash-out">Cash-Out Refinance</SelectItem>
+                            <SelectItem value="home-equity">Home Equity</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="loanAmount"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Loan Amount</FormLabel>
+                        <FormControl>
+                          <Input placeholder="200000" type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="loanTerm"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Loan Term</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select loan term" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="15">15 Years</SelectItem>
+                            <SelectItem value="20">20 Years</SelectItem>
+                            <SelectItem value="30">30 Years</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="creditScore"
+                    render={({ field }) => (
+                      <FormItem className="space-y-3">
+                        <FormLabel>Estimated Credit Score Range</FormLabel>
+                        <FormControl>
+                          <RadioGroup
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            className="flex flex-col space-y-1"
+                          >
+                            <FormItem className="flex items-center space-x-3 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem value="excellent" />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                Excellent (720+)
+                              </FormLabel>
+                            </FormItem>
+                            <FormItem className="flex items-center space-x-3 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem value="good" />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                Good (680-719)
+                              </FormLabel>
+                            </FormItem>
+                            <FormItem className="flex items-center space-x-3 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem value="fair" />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                Fair (620-679)
+                              </FormLabel>
+                            </FormItem>
+                            <FormItem className="flex items-center space-x-3 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem value="poor" />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                Poor (580-619)
+                              </FormLabel>
+                            </FormItem>
+                            <FormItem className="flex items-center space-x-3 space-y-0">
+                              <FormControl>
+                                <RadioGroupItem value="very-poor" />
+                              </FormControl>
+                              <FormLabel className="font-normal">
+                                Very Poor (below 580)
+                              </FormLabel>
+                            </FormItem>
+                          </RadioGroup>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            )}
+          </form>
+        </Form>
+      </CardContent>
+      <CardFooter className="flex justify-between">
+        {currentStep > 1 ? (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={prevStep}
+          >
+            Previous
+          </Button>
+        ) : (
+          <div></div>
+        )}
+
+        {currentStep < 4 ? (
+          <Button
+            type="button"
+            onClick={nextStep}
+            className="bg-bank-primary hover:bg-bank-secondary"
+          >
+            Continue
+          </Button>
+        ) : (
+          <Button
+            type="button"
+            onClick={form.handleSubmit(onSubmit)}
+            className="bg-bank-primary hover:bg-bank-secondary"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Submitting...' : 'Submit Application'}
+          </Button>
+        )}
+      </CardFooter>
+    </Card>
+  );
+};
+
+export default ApplicationForm;

@@ -1,0 +1,248 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate, useLocation } from "react-router-dom";
+
+const LoginSignup = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    phoneNo: "",
+    password: "",
+    newPassword: "",
+  });
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [forgetPasswordMode, setForgetPasswordMode] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(""); // state to hold error message
+
+  const isSignup = location.pathname === "/signup";
+
+  useEffect(() => {
+    setFormData({
+      name: "",
+      phoneNo: "",
+      password: "",
+      newPassword: "",
+    });
+    setForgetPasswordMode(false);
+    setErrorMessage(""); // Reset error message on pathname change
+  }, [location.pathname]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "phoneNo") {
+      // Only allow digits
+      if (!/^\d*$/.test(value)) return;
+      // Limit to 10 digits
+      if (value.length > 10) return;
+    }
+
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const showTemporaryPopup = (msg) => {
+    setPopupMessage(msg);
+    setShowPopup(true);
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 3000); // 3 seconds
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    console.log("Form Data Submitted:", JSON.stringify(formData)); // ✅ show in browser console
+
+    try {
+      if (forgetPasswordMode) {
+        const res = await axios.post(
+          "http://localhost:8080/api/update-password",
+          {
+            phoneNo: formData.phoneNo,
+            newPassword: formData.newPassword,
+          }
+        );
+        showTemporaryPopup(res.data.message || "Password updated");
+        setForgetPasswordMode(false);
+        setFormData({ ...formData, newPassword: "", password: "" });
+        return;
+      }
+
+      // ✅ Admin login check
+      if (
+        !isSignup &&
+        formData.phoneNo === "9999999999" &&
+        formData.password === "123456789"
+      ) {
+        showTemporaryPopup("Admin login successful");
+        navigate("/application"); // ✅ make sure this route exists
+        return;
+      }
+
+      const endpoint = isSignup
+        ? "http://localhost:8080/api/signup"
+        : "http://localhost:8080/api/login";
+
+      const payload = isSignup
+        ? formData
+        : { phoneNo: formData.phoneNo, password: formData.password };
+
+      const res = await axios.post(endpoint, payload);
+
+      if (isSignup) {
+        showTemporaryPopup(res.data.message || "Signup successful");
+        if (res.data.message === "Signup successful") {
+          navigate("/application");
+        }
+      } else {
+        localStorage.setItem("token", res.data.token);
+        showTemporaryPopup("Login successful");
+        navigate("/application");
+      }
+    } catch (err) {
+      // throw new Error("Something went wrong. error");
+      const errorMessage =
+        err.response?.data?.message || err.message || "Something went wrong.";
+      showTemporaryPopup(errorMessage);
+    }
+  };
+
+  return (
+    <div className="SignupAndLoginDivParent">
+      {showPopup && (
+        <div
+          style={{
+            backgroundColor: "#f0ad4e",
+            color: "white",
+            padding: "10px",
+            borderRadius: "5px",
+            margin: "10px auto",
+            textAlign: "center",
+            width: "80%",
+            maxWidth: "400px",
+            position: "absolute", // Ensures it appears as a pop-up
+            top: "10px", // Position from top of the page
+            left: "50%",
+            transform: "translateX(-50%)", // Centers the popup
+            zIndex: 9999, // Ensures it's on top of other elements
+          }}
+        >
+          {popupMessage}
+        </div>
+      )}
+
+      <div className="SignupAndLoginDiv LoginDiv">
+        <div className="SignupAndLoginTaglineDiv">
+          <div className="signupTaglineDiv SignupDetailsPageButton">
+            <span className="signupTaglineSpan">
+              <i
+                className={
+                  isSignup ? "ri-registered-line" : "ri-login-box-line"
+                }
+              ></i>{" "}
+              {isSignup
+                ? "Register Page"
+                : forgetPasswordMode
+                ? "Reset Password"
+                : "Login Page"}
+            </span>
+          </div>
+        </div>
+
+        <div className="SignupAndLoginFormDiv">
+          <div className="signupFormParent">
+            <div className="signupForm">
+              <form onSubmit={handleSubmit} className="formDiv">
+                {isSignup && (
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="Name"
+                    onChange={handleChange}
+                    required
+                  />
+                )}
+                <input
+                  type="text"
+                  name="phoneNo"
+                  placeholder="Phone Number"
+                  inputMode="numeric" // mobile-friendly numeric keypad
+                  pattern="\d{10}" // regex for exactly 10 digits
+                  maxLength={10}
+                  onChange={handleChange}
+                  value={formData.phoneNo}
+                  readOnly={forgetPasswordMode}
+                  required
+                />
+                {!forgetPasswordMode && (
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    onChange={handleChange}
+                    required
+                  />
+                )}
+                {forgetPasswordMode && (
+                  <input
+                    type="password"
+                    name="newPassword"
+                    placeholder="Enter New Password"
+                    onChange={handleChange}
+                    required
+                  />
+                )}
+
+                {!isSignup && !forgetPasswordMode && (
+                  <button
+                    type="button"
+                    className="ForgetPasswordBtn"
+                    style={{ marginBottom: "10px", color: "blue" }}
+                    onClick={() => setForgetPasswordMode(true)}
+                  >
+                    Forgot Password?
+                  </button>
+                )}
+
+                <button type="submit" className="SignupButton submitButton">
+                  {isSignup
+                    ? "Signup"
+                    : forgetPasswordMode
+                    ? "Update Password"
+                    : "Login"}
+                </button>
+
+                {!forgetPasswordMode && (
+                  <div className="SinupButtonPageDiv">
+                    <button
+                      type="button"
+                      className="SinupButtonPage LogInDetailsPageButton"
+                      onClick={() => {
+                        navigate(isSignup ? "/login" : "/signup");
+                      }}
+                    >
+                      {isSignup
+                        ? "Already have an account? "
+                        : "No account yet? "}
+                      <span className="SinupButtonPageSpan">
+                        {isSignup ? "Login" : "Register"}
+                      </span>
+                    </button>
+                  </div>
+                )}
+
+                {/* Removed the <p> message here as requested */}
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default LoginSignup;
